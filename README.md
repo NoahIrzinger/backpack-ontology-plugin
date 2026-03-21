@@ -36,11 +36,39 @@ Opt-in automation that builds knowledge graphs from conversations. Run `npx back
 
 The skill instructs Claude to launch a web-based graph visualizer (`npx backpack-viewer`) when the user asks to see their ontology. Force-directed layout with live reload — changes made via MCP tools appear automatically.
 
-## Setup
+## Installation
 
-Requires Node.js 18+. The MCP server and viewer both run via npx — no additional configuration needed.
+Requires Node.js 18+.
 
-To enable auto-capture hooks: run `npx backpack-init` in your project directory.
+### 1. Install the plugin
+
+In Claude Code, run:
+
+```
+/install-plugin https://github.com/NoahIrzinger/backpack-ontology-plugin
+```
+
+This installs the skill and MCP server. Claude will now have access to 16 backpack tools and know how to use them effectively.
+
+### 2. Enable auto-capture (optional)
+
+To have backpack automatically build knowledge graphs from your conversations:
+
+```bash
+npx backpack-init
+```
+
+This writes hook configuration to `.claude/settings.json` in your project. A background agent will review conversations and capture meaningful knowledge without you needing to call tools manually.
+
+### 3. Visualize your knowledge graph
+
+After building an ontology, view it in the browser:
+
+```bash
+npx backpack-viewer
+```
+
+Opens a force-directed graph visualization at http://localhost:5173 with live reload — changes made via MCP tools appear automatically.
 
 ## Data Storage
 
