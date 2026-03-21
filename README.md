@@ -11,12 +11,13 @@ Examples:
 - "Search the backpack for anything related to authentication"
 - "Add the deployment pipeline to the infrastructure ontology"
 - "Show me the graph"
+- "Set up auto-capture so backpack learns as we work"
 
 ## Components
 
 ### MCP Server: backpack-ontology
 
-Provides 15 tools organized in progressive discovery layers:
+Provides 16 tools organized in progressive discovery layers:
 
 - **Discover**: list, create, describe, delete ontologies
 - **Browse**: list nodes, node types, search
@@ -25,7 +26,11 @@ Provides 15 tools organized in progressive discovery layers:
 
 ### Skill: backpack-guide
 
-Teaches Claude how to use the ontology tools effectively — progressive discovery pattern, naming conventions, common workflows, and graph visualization via backpack-viewer.
+Teaches Claude how to use the ontology tools effectively — progressive discovery pattern, naming conventions, common workflows, auto-capture setup, and graph visualization via backpack-viewer.
+
+### Auto-Capture (Hooks)
+
+Opt-in automation that builds knowledge graphs from conversations. Run `npx backpack-init` in your project to enable. A background agent reviews each conversation and captures meaningful knowledge — business relationships, technical decisions, domain concepts, processes — without needing to call tools manually.
 
 ### Visualization: backpack-viewer
 
@@ -34,6 +39,8 @@ The skill instructs Claude to launch a web-based graph visualizer (`npx backpack
 ## Setup
 
 Requires Node.js 18+. The MCP server and viewer both run via npx — no additional configuration needed.
+
+To enable auto-capture hooks: run `npx backpack-init` in your project directory.
 
 ## Data Storage
 

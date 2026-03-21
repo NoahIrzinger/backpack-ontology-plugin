@@ -4,11 +4,12 @@ description: >
   This skill should be used when the user asks to "create an ontology",
   "store knowledge", "build a knowledge graph", "search the backpack",
   "remember this", "add to the ontology", "visualize the graph",
-  "show me the ontology", or wants persistent structured memory across
-  sessions. Also use when the user mentions "backpack", "ontology",
-  "nodes and edges", or "graph traversal".
+  "show me the ontology", "set up auto-capture", "enable backpack hooks",
+  or wants persistent structured memory across sessions. Also use when
+  the user mentions "backpack", "ontology", "nodes and edges", "graph
+  traversal", or "knowledge graph".
 metadata:
-  version: "0.1.0"
+  version: "0.2.0"
 ---
 
 # Backpack Ontology Guide
@@ -86,6 +87,36 @@ Create or modify data only after understanding the existing structure.
 2. `backpack_get_node` to see current properties
 3. `backpack_update_node` to merge in new properties (existing properties are preserved)
 
+## Auto-Capture (Hooks)
+
+Backpack can automatically build knowledge graphs from conversations using Claude Code hooks. When enabled, a background agent reviews each conversation and captures meaningful knowledge — business relationships, technical decisions, domain concepts, processes — without the user needing to call tools manually.
+
+### Setting up auto-capture
+
+When the user asks to "set up auto-capture", "enable backpack hooks", "make backpack automatic", or "capture knowledge automatically":
+
+1. Run `npx backpack-init` via Bash in the user's project directory
+2. This writes hook configuration to `.claude/settings.json`
+3. Two hooks are enabled:
+   - **Auto-capture (Stop hook)**: a background agent reviews conversations after each response and updates ontologies when meaningful knowledge is discussed
+   - **Viewer suggestions (PostToolUse hook)**: reminds the user to visualize their graph after ontology updates
+
+### What auto-capture looks for
+- Business knowledge: client details, vendor info, pricing, partnerships, workflows
+- Technical knowledge: architecture, APIs, data flows, integrations, design decisions
+- Domain knowledge: industry concepts, terminology, regulations, best practices
+- Operational knowledge: decisions made, problems solved, processes established, conventions
+- Relationships: how people, systems, concepts, or processes connect
+
+### What auto-capture skips
+- Simple Q&A with no lasting value
+- Debugging that led nowhere
+- Casual conversation or greetings
+- Knowledge already captured in a previous pass
+
+### Disabling auto-capture
+To disable, remove the backpack hooks from `.claude/settings.json`.
+
 ## Visualization
 
 Backpack includes a web-based graph visualizer with force-directed layout and live reload.
@@ -103,5 +134,6 @@ The viewer reads ontology data directly from the same storage location (`~/.loca
 
 ### When to suggest visualization
 - After building or significantly modifying an ontology
+- After auto-capture updates an ontology
 - When the user is exploring a complex graph with many relationships
 - When the user asks about the overall structure or shape of their data
