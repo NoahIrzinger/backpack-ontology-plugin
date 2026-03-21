@@ -1,0 +1,11 @@
+{
+  "name": "backpack-ontology",
+  "version": "0.1.0",
+  "description": "Persistent knowledge graph memory for Claude — store, search, and traverse structured data across sessions",
+  "author": {
+    "name": "Noah Irzinger"
+  },
+  "homepage": "https://www.npmjs.com/package/backpack-ontology",
+  "license": "Apache-2.0",
+  "keywords": ["knowledge-graph", "ontology", "memory", "mcp"]
+}

@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "backpack": {
+      "command": "npx",
+      "args": ["backpack-ontology"]
+    }
+  }
+}
