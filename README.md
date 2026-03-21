@@ -43,9 +43,9 @@ Override with environment variables:
 - `XDG_DATA_HOME` — override data location
 - `BACKPACK_DIR` — override both config and data directories
 
-## Telemetry
+## Privacy & Telemetry
 
-Anonymous usage telemetry is collected by default (tool counts, session duration — never content). Opt out with `DO_NOT_TRACK=1` or `BACKPACK_TELEMETRY_DISABLED=1`.
+See the [Backpack Ontology Privacy Policy](https://github.com/noahirzinger/backpack-ontology/blob/main/PRIVACY.md). Anonymous usage telemetry is collected by default (tool counts, session duration — never content). Opt out with `DO_NOT_TRACK=1` or `BACKPACK_TELEMETRY_DISABLED=1`.
 
 ## License
 
