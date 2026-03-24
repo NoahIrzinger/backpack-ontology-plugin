@@ -1,10 +1,10 @@
 # Backpack Plugin
 
-**Carry your knowledge forward.** Backpack lets Claude remember what matters — your clients, your processes, your decisions — across every conversation.
+**Carry your knowledge forward.** Backpack lets Claude remember what matters: your clients, your processes, your decisions. Knowledge that travels with you.
 
 ## What it does
 
-Backpack is a single persistent knowledge base that Claude carries across conversations. Inside it are ontologies — each one a knowledge graph about a different topic. There are no enforced schemas; Claude decides what structure fits the domain.
+Backpack is a persistent knowledge base that Claude carries across conversations. Inside it are ontologies, each a knowledge graph about a different topic. There are no enforced schemas. Claude decides what structure fits the domain.
 
 ## Install
 
@@ -14,7 +14,7 @@ Tell Claude:
 
 > "Install the backpack plugin from github.com/NoahIrzinger/backpack-ontology-plugin"
 
-Claude will set it up for you. After that, just start talking — tell Claude what to remember and it handles the rest.
+Claude will set it up for you. After that, just start talking.
 
 ### Claude Code (terminal)
 
@@ -28,7 +28,7 @@ Restart Claude Code and you're ready.
 
 ## What to say to Claude
 
-Just talk to Claude naturally. No commands to learn.
+No commands to learn. Just talk naturally.
 
 ### Remember something
 
@@ -64,10 +64,10 @@ Sign up for a free account at [app.backpackontology.com](https://app.backpackont
 |---|---|
 | **MCP Server** | 16 tools for storing, searching, and traversing knowledge graphs |
 | **Skill** | Teaches Claude best practices for organizing and querying your backpack |
-| **Auto-Capture** | Background agent that automatically saves meaningful knowledge from conversations |
+| **Auto-Capture** | Background agent that saves meaningful knowledge from conversations automatically |
 | **Visualization** | Claude launches a web-based graph explorer when you ask to see your data |
 
-Auto-capture hooks are installed automatically. To disable, remove the backpack hooks from `.claude/settings.json`.
+Auto-capture hooks install automatically. To disable, remove the backpack hooks from `.claude/settings.json`.
 
 ## Reference
 
@@ -85,7 +85,7 @@ Local ontologies are stored as human-readable JSON at `~/.local/share/backpack/o
 
 ## Privacy & Telemetry
 
-See the [Privacy Policy](https://github.com/noahirzinger/backpack-ontology/blob/main/PRIVACY.md). Anonymous usage telemetry is collected by default (tool counts, session duration — never content). Opt out with `DO_NOT_TRACK=1`.
+See the [Privacy Policy](https://github.com/noahirzinger/backpack-ontology/blob/main/PRIVACY.md). Anonymous usage telemetry is collected by default (tool counts, session duration, never content). Opt out with `DO_NOT_TRACK=1`.
 
 ## License
 
