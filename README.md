@@ -1,6 +1,6 @@
 # Backpack Plugin
 
-**Give your AI a memory it can actually use.** Backpack lets Claude remember what matters — your clients, your processes, your decisions — across every conversation.
+**Carry your knowledge forward.** Backpack lets Claude remember what matters — your clients, your processes, your decisions — across every conversation.
 
 ## What it does
 
