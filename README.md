@@ -31,7 +31,7 @@ Restart Claude Code and you're ready.
 Sign up for a free account at [app.backpackontology.com](https://app.backpackontology.com) to sync across devices and share with your team:
 
 ```
-claude mcp add backpack-app -s user -- npx backpack-app
+claude mcp add backpack-app -s user -- npx -p backpack-ontology backpack-app
 ```
 
 ## What to say to Claude
@@ -84,8 +84,8 @@ Auto-capture hooks install automatically. To disable, remove the backpack hooks 
 | Command | What it does |
 |---|---|
 | `npx backpack-viewer` | Open the graph visualizer (http://localhost:5173) |
-| `npx backpack-sync` | Upload local ontologies to Backpack App |
-| `npx backpack-init` | Reinstall auto-capture hooks if removed |
+| `npx -p backpack-ontology backpack-sync` | Upload local ontologies to Backpack App |
+| `npx -p backpack-ontology backpack-init` | Reinstall auto-capture hooks if removed |
 
 ### Data storage
 
