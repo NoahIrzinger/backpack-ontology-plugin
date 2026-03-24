@@ -5,20 +5,21 @@ description: >
   "store knowledge", "build a knowledge graph", "search the backpack",
   "remember this", "add to the ontology", "visualize the graph",
   "show me the ontology", "set up auto-capture", "enable backpack hooks",
+  "sync my backpack", "sync to cloud", "upload to cloud", "move to cloud",
   or wants persistent structured memory across sessions. Also use when
   the user mentions "backpack", "ontology", "nodes and edges", "graph
-  traversal", or "knowledge graph".
+  traversal", "knowledge graph", or "sync".
 metadata:
   version: "0.2.0"
 ---
 
-# Backpack Ontology Guide
+# Backpack Guide
 
-Backpack provides persistent knowledge graph storage via MCP tools. Use this guide to interact with ontologies effectively.
+Backpack is the user's persistent knowledge base — a single backpack they carry across every conversation. Inside it are **ontologies**, each one a knowledge graph about a different topic (clients, processes, architecture, etc.).
 
 ## Core Concept
 
-Ontologies are typed graphs: **nodes** (entities) connected by **edges** (relationships). There are no enforced schemas — decide what structure fits the domain. Nodes have a freeform `type` and arbitrary `properties`. Edges have a `type` connecting a source node to a target node.
+There is one backpack. Inside it are ontologies. Each ontology is a typed graph: **nodes** (things) connected by **edges** (relationships). There are no enforced schemas — decide what structure fits the domain. Nodes have a freeform `type` and arbitrary `properties`. Edges have a `type` connecting a source to a target.
 
 ## Progressive Discovery Pattern
 
@@ -89,17 +90,11 @@ Create or modify data only after understanding the existing structure.
 
 ## Auto-Capture (Hooks)
 
-Backpack can automatically build knowledge graphs from conversations using Claude Code hooks. When enabled, a background agent reviews each conversation and captures meaningful knowledge — business relationships, technical decisions, domain concepts, processes — without the user needing to call tools manually.
+Backpack automatically builds knowledge graphs from conversations using Claude Code hooks. Hooks are installed automatically when the MCP server starts. A background agent reviews each conversation and captures meaningful knowledge — business relationships, technical decisions, domain concepts, processes — without the user needing to call tools manually.
 
-### Setting up auto-capture
-
-When the user asks to "set up auto-capture", "enable backpack hooks", "make backpack automatic", or "capture knowledge automatically":
-
-1. Run `npx backpack-init` via Bash in the user's project directory
-2. This writes hook configuration to `.claude/settings.json`
-3. Two hooks are enabled:
-   - **Auto-capture (Stop hook)**: a background agent reviews conversations after each response and updates ontologies when meaningful knowledge is discussed
-   - **Viewer suggestions (PostToolUse hook)**: reminds the user to visualize their graph after ontology updates
+Two hooks are active:
+- **Auto-capture (Stop hook)**: a background agent reviews conversations and adds meaningful knowledge to the backpack
+- **Viewer suggestions (PostToolUse hook)**: reminds the user to visualize their graph after updates
 
 ### What auto-capture looks for
 - Business knowledge: client details, vendor info, pricing, partnerships, workflows
@@ -115,7 +110,7 @@ When the user asks to "set up auto-capture", "enable backpack hooks", "make back
 - Knowledge already captured in a previous pass
 
 ### Disabling auto-capture
-To disable, remove the backpack hooks from `.claude/settings.json`.
+To disable, the user can remove the backpack hooks from `.claude/settings.json`. Running `npx backpack-init` will reinstall them.
 
 ## Visualization
 
@@ -137,3 +132,19 @@ The viewer reads ontology data directly from the same storage location (`~/.loca
 - After auto-capture updates an ontology
 - When the user is exploring a complex graph with many relationships
 - When the user asks about the overall structure or shape of their data
+
+## Syncing to Backpack App
+
+**IMPORTANT**: When the user says anything about syncing their backpack — "sync my backpack", "sync to cloud", "upload to cloud", "move to cloud", "sync to remote", "push to cloud" — IMMEDIATELY run the sync command. Do NOT ask clarifying questions. Do NOT try to use MCP tools. Do NOT check what's in the backpack first. Just run the command:
+
+```bash
+npx backpack-sync
+```
+
+The sync tool handles everything automatically:
+- Reads local ontologies from disk
+- Authenticates with Backpack App (reuses cached credentials or opens browser)
+- Uploads all ontologies to the cloud
+- Reports what was created/updated
+
+After syncing, tell the user their ontologies are now in Backpack App and they can switch to cloud mode by updating their MCP config to use `backpack-app` instead of `backpack`.

@@ -1,86 +1,91 @@
-# Backpack Ontology Plugin
+# Backpack Plugin
 
-Persistent knowledge graph memory for Claude. Store, search, and traverse structured data that persists across sessions.
+**Give your AI a memory it can actually use.** Backpack lets Claude remember what matters — your clients, your processes, your decisions — across every conversation.
 
 ## What it does
 
-Backpack gives Claude structured, searchable memory organized as typed graphs — nodes (entities) connected by edges (relationships). There are no enforced schemas; Claude decides what structure fits the domain.
+Backpack is a single persistent knowledge base that Claude carries across conversations. Inside it are ontologies — each one a knowledge graph about a different topic. There are no enforced schemas; Claude decides what structure fits the domain.
 
-Examples:
-- "Create an ontology about our codebase architecture"
-- "Search the backpack for anything related to authentication"
-- "Add the deployment pipeline to the infrastructure ontology"
-- "Show me the graph"
-- "Set up auto-capture so backpack learns as we work"
+## Install
 
-## Components
+### Claude Cowork (web)
 
-### MCP Server: backpack-ontology
+Tell Claude:
 
-Provides 16 tools organized in progressive discovery layers:
+> "Install the backpack plugin from github.com/NoahIrzinger/backpack-ontology-plugin"
 
-- **Discover**: list, create, describe, delete ontologies
-- **Browse**: list nodes, node types, search
-- **Inspect**: get full node data, graph traversal
-- **Mutate**: add/update/remove nodes and edges, bulk import
+Claude will set it up for you. After that, just start talking — tell Claude what to remember and it handles the rest.
 
-### Skill: backpack-guide
+### Claude Code (terminal)
 
-Teaches Claude how to use the ontology tools effectively — progressive discovery pattern, naming conventions, common workflows, auto-capture setup, and graph visualization via backpack-viewer.
-
-### Auto-Capture (Hooks)
-
-Opt-in automation that builds knowledge graphs from conversations. Run `npx backpack-init` in your project to enable. A background agent reviews each conversation and captures meaningful knowledge — business relationships, technical decisions, domain concepts, processes — without needing to call tools manually.
-
-### Visualization: backpack-viewer
-
-The skill instructs Claude to launch a web-based graph visualizer (`npx backpack-viewer`) when the user asks to see their ontology. Force-directed layout with live reload — changes made via MCP tools appear automatically.
-
-## Installation
-
-Requires Node.js 18+.
-
-### 1. Install the plugin
-
-In Claude Code, run:
+Run:
 
 ```
 /install-plugin https://github.com/NoahIrzinger/backpack-ontology-plugin
 ```
 
-This installs the skill and MCP server. Claude will now have access to 16 backpack tools and know how to use them effectively.
+Restart Claude Code and you're ready.
 
-### 2. Enable auto-capture (optional)
+## What to say to Claude
 
-To have backpack automatically build knowledge graphs from your conversations:
+Just talk to Claude naturally. No commands to learn.
 
-```bash
-npx backpack-init
-```
+### Remember something
 
-This writes hook configuration to `.claude/settings.json` in your project. A background agent will review conversations and capture meaningful knowledge without you needing to call tools manually.
+> "Remember that Acme Corp is on the Enterprise tier, main contact is Sarah Chen"
 
-### 3. Visualize your knowledge graph
+> "Start an ontology for our hiring process"
 
-After building an ontology, view it in the browser:
+> "Add the new vendor agreement to backpack"
 
-```bash
-npx backpack-viewer
-```
+### Find something
 
-Opens a force-directed graph visualization at http://localhost:5173 with live reload — changes made via MCP tools appear automatically.
+> "What's in my backpack about Acme Corp?"
 
-## Data Storage
+> "Search backpack for anything related to compliance"
 
-Ontologies are stored as human-readable JSON at `~/.local/share/backpack/ontologies/`.
+### See the big picture
 
-Override with environment variables:
-- `XDG_DATA_HOME` — override data location
-- `BACKPACK_DIR` — override both config and data directories
+> "Show me my knowledge graph"
+
+> "What's in my backpack?"
+
+Claude will open a graph visualizer so you can explore your knowledge visually.
+
+### Move to the cloud
+
+> "Sync my backpack to the cloud"
+
+Sign up for a free account at [app.backpackontology.com](https://app.backpackontology.com) to access your knowledge from any device and share with your team.
+
+## What's included
+
+| Component | What it does |
+|---|---|
+| **MCP Server** | 16 tools for storing, searching, and traversing knowledge graphs |
+| **Skill** | Teaches Claude best practices for organizing and querying your backpack |
+| **Auto-Capture** | Background agent that automatically saves meaningful knowledge from conversations |
+| **Visualization** | Claude launches a web-based graph explorer when you ask to see your data |
+
+Auto-capture hooks are installed automatically. To disable, remove the backpack hooks from `.claude/settings.json`.
+
+## Reference
+
+### CLI commands
+
+| Command | What it does |
+|---|---|
+| `npx backpack-viewer` | Open the graph visualizer (http://localhost:5173) |
+| `npx backpack-sync` | Upload local ontologies to Backpack App |
+| `npx backpack-init` | Reinstall auto-capture hooks if removed |
+
+### Data storage
+
+Local ontologies are stored as human-readable JSON at `~/.local/share/backpack/ontologies/`.
 
 ## Privacy & Telemetry
 
-See the [Backpack Ontology Privacy Policy](https://github.com/noahirzinger/backpack-ontology/blob/main/PRIVACY.md). Anonymous usage telemetry is collected by default (tool counts, session duration — never content). Opt out with `DO_NOT_TRACK=1` or `BACKPACK_TELEMETRY_DISABLED=1`.
+See the [Privacy Policy](https://github.com/noahirzinger/backpack-ontology/blob/main/PRIVACY.md). Anonymous usage telemetry is collected by default (tool counts, session duration — never content). Opt out with `DO_NOT_TRACK=1`.
 
 ## License
 
