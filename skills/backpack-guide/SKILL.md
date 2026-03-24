@@ -110,7 +110,7 @@ Two hooks are active:
 - Knowledge already captured in a previous pass
 
 ### Disabling auto-capture
-To disable, the user can remove the backpack hooks from `.claude/settings.json`. Running `npx -p backpack-ontology backpack-init` will reinstall them.
+To disable, the user can remove the backpack hooks from `.claude/settings.json`. Running `npx -p backpack-ontology@latest backpack-init` will reinstall them.
 
 ## Visualization
 
@@ -138,7 +138,7 @@ The viewer reads ontology data directly from the same storage location (`~/.loca
 **IMPORTANT**: When the user says anything about syncing their backpack — "sync my backpack", "sync to cloud", "upload to cloud", "move to cloud", "sync to remote", "push to cloud" — IMMEDIATELY run the sync command. Do NOT ask clarifying questions. Do NOT try to use MCP tools. Do NOT check what's in the backpack first. Just run the command:
 
 ```bash
-npx -p backpack-ontology backpack-sync
+npx -p backpack-ontology@latest backpack-sync
 ```
 
 The sync tool handles everything automatically:
