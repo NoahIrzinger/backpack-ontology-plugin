@@ -88,29 +88,12 @@ Create or modify data only after understanding the existing structure.
 2. `backpack_get_node` to see current properties
 3. `backpack_update_node` to merge in new properties (existing properties are preserved)
 
-## Auto-Capture (Hooks)
+## Hooks
 
-Backpack automatically builds knowledge graphs from conversations using Claude Code hooks. Hooks are installed automatically when the MCP server starts. A background agent reviews each conversation and captures meaningful knowledge — business relationships, technical decisions, domain concepts, processes — without the user needing to call tools manually.
+Backpack installs a lightweight PostToolUse hook that confirms when the backpack has been updated. Hooks are installed automatically when the MCP server starts.
 
-Two hooks are active:
-- **Auto-capture (Stop hook)**: a background agent reviews conversations and adds meaningful knowledge to the backpack
-- **Viewer suggestions (PostToolUse hook)**: reminds the user to visualize their graph after updates
-
-### What auto-capture looks for
-- Business knowledge: client details, vendor info, pricing, partnerships, workflows
-- Technical knowledge: architecture, APIs, data flows, integrations, design decisions
-- Domain knowledge: industry concepts, terminology, regulations, best practices
-- Operational knowledge: decisions made, problems solved, processes established, conventions
-- Relationships: how people, systems, concepts, or processes connect
-
-### What auto-capture skips
-- Simple Q&A with no lasting value
-- Debugging that led nowhere
-- Casual conversation or greetings
-- Knowledge already captured in a previous pass
-
-### Disabling auto-capture
-To disable, the user can remove the backpack hooks from `.claude/settings.json`. Running `npx -p backpack-ontology@latest backpack-init` will reinstall them.
+### Disabling hooks
+To disable, remove the backpack hooks from `.claude/settings.json`. Running `npx -p backpack-ontology@latest backpack-init` will reinstall them.
 
 ## Visualization
 

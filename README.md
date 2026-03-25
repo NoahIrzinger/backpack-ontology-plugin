@@ -72,7 +72,7 @@ Sign up for a free account at [app.backpackontology.com](https://app.backpackont
 |---|---|
 | **MCP Server** | 16 tools for storing, searching, and traversing knowledge graphs |
 | **Skill** | Teaches Claude best practices for organizing and querying your backpack |
-| **Auto-Capture** | Background agent that saves meaningful knowledge from conversations automatically |
+| **Update Notifications** | Confirms when your backpack has been updated |
 | **Visualization** | Claude launches a web-based graph explorer when you ask to see your data |
 
 Auto-capture hooks install automatically. To disable, remove the backpack hooks from `.claude/settings.json`.
