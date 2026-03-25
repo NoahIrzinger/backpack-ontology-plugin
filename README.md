@@ -31,7 +31,7 @@ Restart Claude Code and you're ready.
 Sign up for a free account at [app.backpackontology.com](https://app.backpackontology.com) to sync across devices and share with your team:
 
 ```
-claude mcp add backpack-app -s user -- npx -p backpack-ontology@latest backpack-app
+claude mcp add backpack-app -s user --transport sse https://app.backpackontology.com/mcp/sse
 ```
 
 ## What to say to Claude
