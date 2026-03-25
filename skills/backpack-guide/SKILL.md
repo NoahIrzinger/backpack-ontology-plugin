@@ -1,25 +1,25 @@
 ---
 name: backpack-guide
 description: >
-  This skill should be used when the user asks to "create an ontology",
-  "store knowledge", "build a knowledge graph", "search the backpack",
-  "remember this", "add to the ontology", "visualize the graph",
-  "show me the ontology", "set up auto-capture", "enable backpack hooks",
+  This skill should be used when the user asks to "create a learning graph",
+  "store knowledge", "build a learning graph", "search the backpack",
+  "remember this", "add to the graph", "visualize the graph",
+  "show me the graph", "set up auto-capture", "enable backpack hooks",
   "sync my backpack", "sync to cloud", "upload to cloud", "move to cloud",
   or wants persistent structured memory across sessions. Also use when
-  the user mentions "backpack", "ontology", "nodes and edges", "graph
-  traversal", "knowledge graph", or "sync".
+  the user mentions "backpack", "ontology", "learning graph", "nodes and
+  edges", "graph traversal", or "sync".
 metadata:
-  version: "0.2.0"
+  version: "0.3.0"
 ---
 
 # Backpack Guide
 
-Backpack is the user's persistent knowledge base — a single backpack they carry across every conversation. Inside it are **ontologies**, each one a knowledge graph about a different topic (clients, processes, architecture, etc.).
+Backpack is the user's persistent knowledge base — a single backpack they carry across every conversation. Inside it are **learning graphs**, each one about a different topic (clients, processes, architecture, etc.).
 
 ## Core Concept
 
-There is one backpack. Inside it are ontologies. Each ontology is a typed graph: **nodes** (things) connected by **edges** (relationships). There are no enforced schemas — decide what structure fits the domain. Nodes have a freeform `type` and arbitrary `properties`. Edges have a `type` connecting a source to a target.
+There is one backpack. Inside it are learning graphs. Each learning graph is a typed graph: **nodes** (things) connected by **edges** (relationships). There are no enforced schemas — decide what structure fits the domain. Nodes have a freeform `type` and arbitrary `properties`. Edges have a `type` connecting a source to a target.
 
 ## Progressive Discovery Pattern
 
@@ -27,15 +27,15 @@ Always follow this layered approach to keep the context window lean. Start broad
 
 ### Layer 1: Discover
 
-Start here. Understand what ontologies exist before doing anything else.
+Start here. Understand what learning graphs exist before doing anything else.
 
-- `backpack_list` — list all ontologies with names, descriptions, and summary counts
-- `backpack_create` — create a new empty ontology
-- `backpack_describe` — inspect an ontology's structure: node types, edge types, counts
+- `backpack_list` — list all learning graphs with names, descriptions, and summary counts
+- `backpack_create` — create a new empty learning graph
+- `backpack_describe` — inspect a graph's structure: node types, edge types, counts
 
 ### Layer 2: Browse
 
-Once you know which ontology to work with, explore its contents.
+Once you know which learning graph to work with, explore its contents.
 
 - `backpack_node_types` — list distinct node types with counts
 - `backpack_list_nodes` — paginated node summaries, optionally filtered by type
@@ -61,7 +61,7 @@ Create or modify data only after understanding the existing structure.
 
 ## Best Practices
 
-1. **Always call `backpack_list` first** to see what already exists. Never create a duplicate ontology.
+1. **Always call `backpack_list` first** to see what already exists. Never create a duplicate learning graph.
 2. **Use `backpack_describe` before mutating** to understand the existing schema — match existing node types and edge types rather than inventing new ones that overlap.
 3. **Use `backpack_search` before adding nodes** to avoid duplicates.
 4. **Keep node types consistent** — use singular PascalCase (e.g., `Person`, `Module`, `Recipe`).
@@ -71,14 +71,14 @@ Create or modify data only after understanding the existing structure.
 
 ## Common Patterns
 
-### Building an ontology from scratch
+### Building a learning graph from scratch
 1. `backpack_create` with a descriptive name and description
 2. Add foundational nodes first (the "anchors" other nodes relate to)
 3. Add detail nodes and connect them with edges
 4. Use `backpack_describe` to verify the structure looks right
 
-### Answering questions from an ontology
-1. `backpack_list` to find the relevant ontology
+### Answering questions from a learning graph
+1. `backpack_list` to find the relevant graph
 2. `backpack_search` with keywords from the user's question
 3. `backpack_get_node` on the most relevant result
 4. `backpack_get_neighbors` if the answer requires traversing relationships
@@ -101,18 +101,18 @@ Backpack includes a web-based graph visualizer with force-directed layout and li
 
 ### Launching the viewer
 
-When the user asks to "visualize", "show the graph", "see the ontology", or "open the viewer":
+When the user asks to "visualize", "show the graph", "see the learning graph", or "open the viewer":
 
 1. Run `npx backpack-viewer` via Bash to start the viewer server on localhost
 2. The viewer starts on `http://localhost:5173` by default
 3. In Cowork: open the URL in the browser so the user can see the graph immediately
 4. In Claude Code: inform the user the viewer is running and they can open `http://localhost:5173` in their browser
 
-The viewer reads ontology data directly from the same storage location (`~/.local/share/backpack/ontologies/`) and supports live reload — changes made via MCP tools appear in the visualization automatically.
+The viewer reads data directly from the same storage location (`~/.local/share/backpack/ontologies/`) and supports live reload — changes made via MCP tools appear in the visualization automatically.
 
 ### When to suggest visualization
-- After building or significantly modifying an ontology
-- After auto-capture updates an ontology
+- After building or significantly modifying a learning graph
+- After auto-capture updates a graph
 - When the user is exploring a complex graph with many relationships
 - When the user asks about the overall structure or shape of their data
 
@@ -125,9 +125,9 @@ npx -p backpack-ontology@latest backpack-sync
 ```
 
 The sync tool handles everything automatically:
-- Reads local ontologies from disk
+- Reads local learning graphs from disk
 - Authenticates with Backpack App (reuses cached credentials or opens browser)
-- Uploads all ontologies to the cloud
+- Uploads all learning graphs to the cloud
 - Reports what was created/updated
 
-After syncing, tell the user their ontologies are now in Backpack App and they can switch to cloud mode by updating their MCP config to use `backpack-app` instead of `backpack`.
+After syncing, tell the user their learning graphs are now in Backpack App and they can switch to cloud mode by updating their MCP config to use `backpack-app` instead of `backpack`.

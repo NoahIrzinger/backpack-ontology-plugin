@@ -4,7 +4,7 @@
 
 ## What it does
 
-Backpack is a persistent knowledge base that Claude carries across conversations. Inside it are ontologies, each a knowledge graph about a different topic. There are no enforced schemas. Claude decides what structure fits the domain.
+Backpack is a persistent knowledge base that Claude carries across conversations. Inside it are learning graphs, each about a different topic. There are no enforced schemas. Claude decides what structure fits the domain.
 
 ## Install
 
@@ -42,7 +42,7 @@ No commands to learn. Just talk naturally.
 
 > "Remember that Acme Corp is on the Enterprise tier, main contact is Sarah Chen"
 
-> "Start an ontology for our hiring process"
+> "Start a learning graph for our hiring process"
 
 > "Add the new vendor agreement to backpack"
 
@@ -54,7 +54,7 @@ No commands to learn. Just talk naturally.
 
 ### See the big picture
 
-> "Show me my knowledge graph"
+> "Show me my learning graph"
 
 > "What's in my backpack?"
 
@@ -70,7 +70,7 @@ Sign up for a free account at [app.backpackontology.com](https://app.backpackont
 
 | Component | What it does |
 |---|---|
-| **MCP Server** | 16 tools for storing, searching, and traversing knowledge graphs |
+| **MCP Server** | 16 tools for storing, searching, and traversing learning graphs |
 | **Skill** | Teaches Claude best practices for organizing and querying your backpack |
 | **Update Notifications** | Confirms when your backpack has been updated |
 | **Visualization** | Claude launches a web-based graph explorer when you ask to see your data |
@@ -84,12 +84,12 @@ Auto-capture hooks install automatically. To disable, remove the backpack hooks 
 | Command | What it does |
 |---|---|
 | `npx backpack-viewer` | Open the graph visualizer (http://localhost:5173) |
-| `npx -p backpack-ontology@latest backpack-sync` | Upload local ontologies to Backpack App |
+| `npx -p backpack-ontology@latest backpack-sync` | Upload local learning graphs to Backpack App |
 | `npx -p backpack-ontology@latest backpack-init` | Reinstall auto-capture hooks if removed |
 
 ### Data storage
 
-Local ontologies are stored as human-readable JSON at `~/.local/share/backpack/ontologies/`.
+Local learning graphs are stored as human-readable JSON at `~/.local/share/backpack/ontologies/`.
 
 ## Privacy & Telemetry
 
