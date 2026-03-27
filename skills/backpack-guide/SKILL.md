@@ -57,7 +57,7 @@ Create or modify data only after understanding the existing structure.
 - `backpack_remove_node` — remove a node and cascade-delete its edges
 - `backpack_add_edge` — create a typed relationship between two nodes
 - `backpack_remove_edge` — remove a relationship
-- `backpack_import_nodes` — bulk-add multiple nodes in a single operation
+- `backpack_import_nodes` — bulk-add nodes **and edges** in a single call (preferred for building connected subgraphs)
 
 ## Best Practices
 
@@ -67,15 +67,35 @@ Create or modify data only after understanding the existing structure.
 4. **Keep node types consistent** — use singular PascalCase (e.g., `Person`, `Module`, `Recipe`).
 5. **Keep edge types consistent** — use SCREAMING_SNAKE_CASE verbs (e.g., `WORKS_ON`, `DEPENDS_ON`, `CONTAINS`).
 6. **Use meaningful properties** — include enough context in node properties that the node is useful on its own without traversing edges.
-7. **Prefer `backpack_import_nodes` for bulk operations** — when adding 3+ nodes, batch them in a single call.
+7. **Always include edges when importing nodes** — use `backpack_import_nodes` with the `edges` array to create nodes and relationships in one call. Reference new nodes by their array index (0, 1, 2...) and existing nodes by their ID string. Never import nodes without connecting them.
 
 ## Common Patterns
 
 ### Building a learning graph from scratch
 1. `backpack_create` with a descriptive name and description
-2. Add foundational nodes first (the "anchors" other nodes relate to)
-3. Add detail nodes and connect them with edges
-4. Use `backpack_describe` to verify the structure looks right
+2. Use `backpack_import_nodes` with both `nodes` and `edges` to add connected subgraphs in a single call. Reference nodes within the import by index (0, 1, 2...) and existing anchor nodes by their ID.
+3. Use `backpack_describe` to verify the structure looks right
+
+### Example: importing a connected subgraph
+
+```json
+{
+  "ontology": "cooking",
+  "nodes": [
+    { "type": "Recipe", "properties": { "name": "Aglio e Olio" } },
+    { "type": "Ingredient", "properties": { "name": "garlic" } },
+    { "type": "Ingredient", "properties": { "name": "olive oil" } }
+  ],
+  "edges": [
+    { "type": "USES", "source": 0, "target": 1 },
+    { "type": "USES", "source": 0, "target": 2 },
+    { "type": "PAIRS_WITH", "source": 1, "target": 2 }
+  ]
+}
+```
+
+Indices 0, 1, 2 refer to the Recipe, garlic, and olive oil nodes in order.
+To connect a new node to an existing node, use its ID string: `"target": "n_abc123def456"`.
 
 ### Answering questions from a learning graph
 1. `backpack_list` to find the relevant graph
