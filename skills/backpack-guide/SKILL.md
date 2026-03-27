@@ -58,6 +58,7 @@ Create or modify data only after understanding the existing structure.
 - `backpack_add_edge` — create a typed relationship between two nodes
 - `backpack_remove_edge` — remove a relationship
 - `backpack_import_nodes` — bulk-add nodes **and edges** in a single call (preferred for building connected subgraphs)
+- `backpack_connect` — bulk-add edges between existing nodes (preferred for improving connectivity)
 
 ## Best Practices
 
@@ -107,6 +108,13 @@ To connect a new node to an existing node, use its ID string: `"target": "n_abc1
 1. `backpack_search` to find the node to update
 2. `backpack_get_node` to see current properties
 3. `backpack_update_node` to merge in new properties (existing properties are preserved)
+
+### Improving an existing learning graph
+1. `backpack_describe` to get full stats — check `stats.orphans` for unconnected nodes, `stats.mostConnected` and `stats.leastConnected` for imbalances, `stats.typeConnections` for missing relationship patterns
+2. Fix orphans first — use `backpack_connect` to add edges for nodes with zero connections
+3. Address weak nodes — nodes with far fewer connections than their type average (`stats.avgConnections`)
+4. Check type connections — if two types logically relate but `stats.typeConnections` shows no edges between them, add relationships
+5. Use `backpack_describe` again to verify improvements
 
 ## Hooks
 
