@@ -40,6 +40,7 @@ Once you know which learning graph to work with, explore its contents.
 - `backpack_node_types` — list distinct node types with counts
 - `backpack_list_nodes` — paginated node summaries, optionally filtered by type
 - `backpack_search` — case-insensitive text search across all node properties
+- `backpack_audit` — analyze graph quality: orphans, weak nodes, sparse types, and improvement suggestions
 
 ### Layer 3: Inspect
 
@@ -110,11 +111,11 @@ To connect a new node to an existing node, use its ID string: `"target": "n_abc1
 3. `backpack_update_node` to merge in new properties (existing properties are preserved)
 
 ### Improving an existing learning graph
-1. `backpack_describe` to get full stats — check `stats.orphans` for unconnected nodes, `stats.mostConnected` and `stats.leastConnected` for imbalances, `stats.typeConnections` for missing relationship patterns
+1. `backpack_audit` to get a prioritized improvement report — orphans, weak nodes, sparse types, disconnected type pairs, and actionable suggestions
 2. Fix orphans first — use `backpack_connect` to add edges for nodes with zero connections
-3. Address weak nodes — nodes with far fewer connections than their type average (`stats.avgConnections`)
-4. Check type connections — if two types logically relate but `stats.typeConnections` shows no edges between them, add relationships
-5. Use `backpack_describe` again to verify improvements
+3. Address weak nodes — nodes with far fewer connections than their type average
+4. Check disconnected type pairs — if two types logically relate but have no edges between them, add relationships
+5. Use `backpack_describe` to verify improvements (check `stats` for updated metrics)
 
 ## Hooks
 
