@@ -60,6 +60,10 @@ Create or modify data only after understanding the existing structure.
 - `backpack_remove_edge` — remove a relationship
 - `backpack_import_nodes` — bulk-add nodes **and edges** in a single call (preferred for building connected subgraphs)
 - `backpack_connect` — bulk-add edges between existing nodes (preferred for improving connectivity)
+- `backpack_expand` — expand a node with related entities in a direction (loads context, you add the knowledge)
+- `backpack_explain_path` — find the shortest path between two nodes and explain the semantic connection
+- `backpack_enrich` — deepen a node with additional properties and connections
+- `backpack_synthesize` — build a graph from multiple sources in one workflow
 
 ## Best Practices
 
@@ -116,6 +120,21 @@ To connect a new node to an existing node, use its ID string: `"target": "n_abc1
 3. Address weak nodes — nodes with far fewer connections than their type average
 4. Check disconnected type pairs — if two types logically relate but have no edges between them, add relationships
 5. Use `backpack_describe` to verify improvements (check `stats` for updated metrics)
+
+### Curiosity flow: exploring and expanding
+When the user is exploring a graph and wants to go deeper:
+1. `backpack_expand` on a node of interest — adds related entities in the direction the user cares about
+2. `backpack_explain_path` when the user asks "why are these connected?" — finds the shortest path and you explain the semantic meaning
+3. `backpack_enrich` to deepen a specific node with more properties and connections
+4. After expanding, suggest: "Open the viewer to see the new connections: [link]"
+
+### Multi-source synthesis
+When the user wants to combine knowledge from multiple sources (databases, code, APIs, docs, other projects):
+1. Gather data from each source (read files, query MCP tools, etc.)
+2. `backpack_synthesize` with all sources and a focus area
+3. After building, `backpack_audit` to check for gaps
+4. Suggest: "Open the viewer to explore connections: [link]"
+5. Ask: "Which areas should I expand or investigate further?"
 
 ## Hooks
 
