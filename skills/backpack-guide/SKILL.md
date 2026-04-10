@@ -13,14 +13,36 @@ description: >
   ("mine X", "research X into backpack", "grow this graph from sources"),
   use the separate `backpack-mine` skill instead.
 metadata:
-  version: "0.5.0"
+  version: "0.7.0"
 ---
 
 # Backpack Guide
 
-Backpack is the user's persistent knowledge graph — a typed graph store the LLM can query without loading the whole thing into context. Inside the backpack are **learning graphs**, each one about a different topic.
+Backpack is the user's persistent knowledge graph — a typed graph store the LLM can query without loading the whole thing into context. The user can own **multiple backpacks** (personal, a shared OneDrive folder for work, a family folder, etc). Only one backpack is active at a time. Inside the active backpack are **learning graphs**, each one about a different topic.
 
-## The Three-Role Rule (read this before doing anything)
+## Multiple backpacks (read this FIRST)
+
+A "backpack" here means a named directory of learning graphs. The user may have registered several (a personal one plus shared folders with collaborators). Every read and write operation goes to the **currently active** backpack — the others are invisible until you switch.
+
+**Every `backpack_list` and `backpack_describe` response includes an `activeBackpack` field** at the top of the payload. Always read it. When reporting actions to the user, **name the backpack**:
+
+- "Added 'Acme Corp' to the **work** backpack's clients graph."
+- "The **personal** backpack has 12 learning graphs."
+- "Switched to the **family** backpack. You now see 3 graphs: recipes, travel, events."
+
+Meta-level backpack tools (they manage the pointer, not the graphs inside):
+
+- `backpack_active` — which backpack is active right now
+- `backpack_registered` — list every registered backpack with a marker for the active one
+- `backpack_register <path>` — add a new backpack pointer (e.g. a OneDrive share). The display name is derived from the last segment of the path — no manual naming required. Pass `activate: true` to switch immediately.
+- `backpack_switch <path-or-name>` — switch the active backpack; accepts either the derived display name (e.g. `work`) or the absolute path. Everything below this line now reads/writes there.
+- `backpack_unregister <name>` — remove a pointer (does NOT delete the data)
+
+**Suggest switching when the user's question context shifts.** If the user is in the `personal` backpack and asks "what's in the work clients graph?", the right response is: "That's in your `work` backpack — want me to switch over?"
+
+**Never assume which backpack is active.** If a user says "add a node to clients" and there's both a `personal/clients` and a `work/clients`, the answer depends on which backpack is active right now. Read the `activeBackpack` field from the last list/describe response.
+
+## The Three-Role Rule (read this second, right after the multi-backpack section above)
 
 There are three places an LLM can read knowledge from. They do different jobs and they should never overlap.
 

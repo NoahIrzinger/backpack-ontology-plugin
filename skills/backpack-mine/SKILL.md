@@ -7,7 +7,7 @@ description: >
   by iterating over external sources. Also use when the user mentions "mining", "knowledge
   mining", "auto-research", or asks Claude to "go grow this graph for me".
 metadata:
-  version: "0.1.0"
+  version: "0.2.0"
 ---
 
 # Backpack Mine
@@ -59,25 +59,32 @@ that's `iterations: 20`.
 
 ## Setup (run once at the start)
 
-1. **Confirm or create the graph.** `backpack_list` first. If a graph for the topic already
+1. **Confirm the active backpack.** Call `backpack_active` to see which backpack is active.
+   Mining writes to the active backpack's graphs directory — if the user wanted to mine into
+   a different backpack, switch first with `backpack_switch <name>`. Surface the active
+   backpack name in your first message: "Mining into your **work** backpack." Never
+   silently mine into the wrong backpack. If the user's request implies a specific backpack
+   ("mine this into my shared work folder"), switch before starting; if ambiguous, ask.
+
+2. **Confirm or create the graph.** `backpack_list` first. If a graph for the topic already
    exists, ask the user whether to expand it or start fresh in a new graph. If new:
    `backpack_create <name> "<one-line topic description>"`. Pick a stable kebab-case name
    like `gut-microbiome` or `spanish-wines`.
 
-2. **Snapshot for rollback.** `backpack_snapshot <graph> "before mining: <topic>"`. Capture
+3. **Snapshot for rollback.** `backpack_snapshot <graph> "before mining: <topic>"`. Capture
    the returned version number.
 
-3. **Learn the existing vocabulary.** `backpack_describe <graph>`. Note existing node types
+4. **Learn the existing vocabulary.** `backpack_describe <graph>`. Note existing node types
    and edge types — match them in subsequent extractions to prevent type drift. If the graph
    is empty, you're inventing the vocabulary: pick consistent names (PascalCase for nodes,
    SCREAMING_SNAKE_CASE for edges) and use them throughout the run.
 
-4. **Queue seed sources, if any.** If the user gave URLs, file paths, or documents in their
+5. **Queue seed sources, if any.** If the user gave URLs, file paths, or documents in their
    request, queue those as the starting sources for iteration 1. Otherwise iteration 1 starts
    with WebSearch on the topic.
 
-5. **Tell the user the plan.** One terse line:
-   `Mining "<topic>" into <graph> for up to <iterations> iterations or <targetNodes> nodes. Snapshot v<N> captured. Starting iteration 1.`
+6. **Tell the user the plan.** One terse line, naming the active backpack:
+   `Mining "<topic>" into <backpack>/<graph> for up to <iterations> iterations or <targetNodes> nodes. Snapshot v<N> captured. Starting iteration 1.`
 
 ## The iteration loop
 

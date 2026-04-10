@@ -1,5 +1,33 @@
 # Changelog
 
+## 0.4.0 (2026-04-10)
+
+Pairs with `backpack-ontology@0.5.0` and `backpack-viewer@0.5.0`.
+Introduces **multiple backpacks** — users can register several graph
+directories (personal, shared folders, project-specific, network
+mounts, anywhere the filesystem presents a path) and switch between
+them with a single command.
+
+### Skills refreshed for multi-backpack
+- **`backpack-guide` (v0.7.0)** opens with a "Multiple backpacks"
+  section placed *before* the three-role rule. Teaches the agent:
+  - Every `backpack_list` / `backpack_describe` response includes an
+    `activeBackpack` field — always read it.
+  - Name the backpack when reporting actions ("Added X to the **work**
+    backpack's Y graph").
+  - Suggest switching when the user's question implies a different
+    backpack than the active one.
+  - Never assume which backpack is active — check the `activeBackpack`
+    field from the last list/describe.
+  - Reference for the meta-tools with the **new simpler signatures**
+    from ontology 0.5.0: `backpack_register <path>` (no name —
+    derived from path tail), `backpack_switch <path-or-name>`,
+    `backpack_active`, `backpack_registered`, `backpack_unregister <path-or-name>`.
+- **`backpack-mine` (v0.2.0)** gains a first setup step that confirms
+  the active backpack before mining starts. Surfaces the backpack
+  name in the plan message (`Mining "X" into <backpack>/<graph>...`).
+  Never silently mines into the wrong backpack — asks if ambiguous.
+
 ## 0.2.2 (2026-04-10)
 
 ### Fix
