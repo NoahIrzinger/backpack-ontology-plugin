@@ -1,0 +1,22 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "backpack-ontology-marketplace",
+  "description": "Backpack — persistent knowledge graph memory for Claude. MCP server plus usage and mining skills.",
+  "owner": {
+    "name": "Noah Irzinger"
+  },
+  "plugins": [
+    {
+      "name": "backpack-ontology",
+      "description": "Persistent knowledge graph memory for Claude — store, search, traverse, and autonomously mine structured data across sessions. Includes MCP server and two skills (backpack-guide, backpack-mine).",
+      "source": "./",
+      "version": "0.2.2",
+      "homepage": "https://github.com/NoahIrzinger/backpack-ontology-plugin",
+      "category": "productivity",
+      "tags": ["knowledge-graph", "ontology", "memory", "mcp", "mining"],
+      "author": {
+        "name": "Noah Irzinger"
+      }
+    }
+  ]
+}

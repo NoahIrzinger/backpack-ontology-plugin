@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.2.2 (2026-04-10)
+
+### Fix
+- **Added `.claude-plugin/marketplace.json`** — the plugin repo was missing
+  the marketplace catalog file, so `/plugin marketplace add
+  NoahIrzinger/backpack-ontology-plugin` failed with "marketplace file not
+  found." The repo is now a valid Claude Code marketplace that lists itself
+  as its single plugin.
+- **Corrected install command in README.** The plugin's name (from
+  `plugin.json`) is `backpack-ontology`, not `backpack-ontology-plugin`.
+  The 0.2.1 README told users to run
+  `/plugin install backpack-ontology-plugin@...` which would fail.
+  Corrected to `/plugin install backpack-ontology@NoahIrzinger-backpack-ontology-plugin`.
+
 ## 0.2.1 (2026-04-10)
 
 ### Fix
