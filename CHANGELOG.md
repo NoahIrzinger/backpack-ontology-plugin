@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.4.1 (2026-04-10)
+
+### Fix
+- **`npx backpack-viewer` told Claude to run without `@latest`**, which
+  meant npx silently reused a cached older viewer version on users'
+  machines — new viewer releases weren't visible until the cache
+  expired or was manually cleared. The skill and README now instruct
+  Claude to run `npx backpack-viewer@latest` explicitly, forcing a
+  fresh resolution from the npm registry on every invocation. Users
+  who were stuck on an old viewer can unblock themselves immediately
+  with `npm cache clean --force` followed by `npx backpack-viewer@latest`.
+- `backpack-guide` skill bumped to v0.7.1 with the corrected
+  Visualization section.
+
 ## 0.4.0 (2026-04-10)
 
 Pairs with `backpack-ontology@0.5.0` and `backpack-viewer@0.5.0`.

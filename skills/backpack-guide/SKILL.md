@@ -13,7 +13,7 @@ description: >
   ("mine X", "research X into backpack", "grow this graph from sources"),
   use the separate `backpack-mine` skill instead.
 metadata:
-  version: "0.7.0"
+  version: "0.7.1"
 ---
 
 # Backpack Guide
@@ -271,7 +271,7 @@ Backpack includes a web-based graph visualizer with force-directed layout and li
 
 When the user asks to "visualize", "show the graph", "see the learning graph", or "open the viewer":
 
-1. Run `npx backpack-viewer` via Bash to start the viewer server
+1. Run `npx backpack-viewer@latest` via Bash to start the viewer server. **Always include `@latest`** — without it, npx silently reuses a cached older version, so users won't get UI updates until their cache expires or is manually cleared.
 2. The viewer starts on `http://localhost:5173` by default
 3. Open the URL or tell the user to open it
 

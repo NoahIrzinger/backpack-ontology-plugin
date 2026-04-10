@@ -101,7 +101,7 @@ Sign up for a free account at [app.backpackontology.com](https://app.backpackont
 
 | Command | What it does |
 |---|---|
-| `npx backpack-viewer` | Open the graph visualizer (http://localhost:5173) |
+| `npx backpack-viewer@latest` | Open the graph visualizer (http://localhost:5173). Always include `@latest` — `npx backpack-viewer` without the version suffix reuses a cached older version. |
 | `npx -p backpack-ontology@latest backpack-sync` | Upload local learning graphs to Backpack App |
 | `npx -p backpack-ontology@latest backpack-init` | Remove any leftover Backpack hooks from `.claude/settings.json` (the MCP server also runs this cleanup automatically on startup) |
 

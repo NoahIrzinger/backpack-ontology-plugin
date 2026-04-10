@@ -1,6 +1,6 @@
 {
   "name": "backpack-ontology",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Persistent knowledge graph memory for Claude — store, search, and traverse structured data across sessions",
   "author": {
     "name": "Noah Irzinger"
