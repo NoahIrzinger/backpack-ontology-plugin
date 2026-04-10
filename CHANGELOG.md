@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.4.2 (2026-04-10)
+
+### Docs
+- **README install instructions now include enabling auto-update** as
+  step 2. Third-party marketplaces default to auto-update off, which
+  meant users shipping with 0.4.1 and earlier would stay stuck on
+  whatever version they installed first unless they manually
+  reinstalled. New users who follow the updated install steps will
+  opt into auto-update during setup, so future patches roll forward
+  without manual action.
+- Added step numbering (1, 2, 3) to the install flow for clarity.
+
 ## 0.4.1 (2026-04-10)
 
 ### Fix

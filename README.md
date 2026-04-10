@@ -18,14 +18,20 @@ Claude will set it up for you. After that, just start talking.
 
 ### Claude Code (terminal)
 
-Run these two commands in Claude Code:
+**1. Register the marketplace and install the plugin:**
 
 ```
 /plugin marketplace add NoahIrzinger/backpack-ontology-plugin
 /plugin install backpack-ontology@NoahIrzinger-backpack-ontology-plugin
 ```
 
-The first command registers this repo as a marketplace. The second installs the plugin from it. Restart Claude Code (or run `/reload-plugins`) and you're ready.
+The first command registers this repo as a marketplace. The second installs the plugin from it.
+
+**2. Enable auto-update (recommended):**
+
+Run `/plugin` to open the plugin manager, go to the **Marketplaces** tab, select `NoahIrzinger-backpack-ontology-plugin`, and toggle **Enable auto-update**. This is a one-time opt-in — third-party marketplaces default to auto-update off, which means you'd otherwise need to manually reinstall every time a new version ships. With auto-update on, Claude Code checks for new versions at startup and rolls them forward automatically.
+
+**3. Restart Claude Code** (or run `/reload-plugins`) and you're ready.
 
 For local development against a cloned repo, start Claude Code with:
 
