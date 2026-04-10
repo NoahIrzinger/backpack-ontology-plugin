@@ -99,13 +99,31 @@ When working with a learning graph, never load the whole thing. Start broad, dri
 
 ### Layer 4: Mutate
 
-- `backpack_synthesize` — **preferred for any session adding more than ~3 nodes** — builds connected subgraphs in one call
-- `backpack_import_nodes` — bulk-add nodes and edges atomically
+- `backpack_import_nodes` — **preferred for any session adding more than ~3 nodes**. Validates the batch automatically: errors block the commit, warnings (type drift, duplicates, three-role rule violations) are surfaced in the response. Pass `dryRun: true` to review the validation without committing.
+- `backpack_synthesize` — combine multiple text sources (databases, code, docs) into structured nodes
 - `backpack_connect` — bulk-add edges between existing nodes
-- `backpack_add_node` — single-node addition (avoid in normal flows)
+- `backpack_add_node` — single-node addition (**avoid** in normal flows; prefer import_nodes)
 - `backpack_update_node` — merge new properties into an existing node
 - `backpack_remove_node` — remove a node and cascade-delete its edges
 - `backpack_add_edge` / `backpack_remove_edge` — single-edge ops
+
+### How import_nodes validates your batch
+
+The validator runs automatically on every `backpack_import_nodes` call. It catches:
+
+- **Errors (block commit):** broken edges, self-loops, invalid property shapes (nested objects, etc.)
+- **Warnings (committed anyway, but reported):**
+  - **Type drift** — you used `service` but the graph already has `Service`
+  - **Duplicate nodes** — your new node has the same type+label as an existing one
+  - **Three-role violations** — your node looks procedural (should be a skill) or briefing-like (should be in CLAUDE.md)
+
+The agent workflow for safe bulk adds:
+
+1. (Optional but recommended for big batches): call `backpack_import_nodes` with `dryRun: true` to review warnings
+2. Fix any flagged issues (rename to canonical types, deduplicate, move procedural content to skills)
+3. Call again without `dryRun` (or `dryRun: false`) to commit
+
+Errors always block the commit regardless of `dryRun`. Don't wrap dry-run in a loop hoping for a different result — fix the underlying issue.
 
 ### Layer 5: Audit and consolidate
 
