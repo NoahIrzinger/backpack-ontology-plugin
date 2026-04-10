@@ -1,5 +1,33 @@
 # Changelog
 
+## 0.4.3 (2026-04-10)
+
+### Mining skill safety — no more accidentally reading local files
+
+The `backpack-mine` skill (v0.3.0) now has a prominent "Source safety"
+section that bans auto-reading local machine files (CLAUDE.md,
+dotfiles, git state, shell history, IDE state, anything in `~/.config`
+or `~/.ssh` or `~/.aws`) unless the user **explicitly names the file
+by path in the current request**. The worry: users sharing a backpack
+via OneDrive/Dropbox/network mount could accidentally have their
+local CLAUDE.md — or worse, their `.env` — mined into a graph that
+then syncs to a collaborator.
+
+- **Hard rule:** Read tool is off-limits during mining for any file
+  not explicitly named by the user. Web search stays allowed.
+- **Shared backpack detection:** before iteration 1, the agent checks
+  the active backpack's path for `OneDrive`, `Dropbox`, `Google Drive`,
+  `iCloud`, `/Volumes/`, or `\\` UNC prefixes. If detected, the agent
+  downgrades source mode to **web-only** by default regardless of the
+  configured `sourceMode`, and surfaces a warning in the initial plan
+  message.
+- **Ask, don't assume.** If the agent would naturally reach for a
+  local file during mining, it must ask the user first rather than
+  silently reading.
+- New anti-patterns added to the skill's bottom-of-the-file list so
+  the agent is repeatedly reminded throughout the prompt.
+- `backpack-mine` skill bumped to v0.3.0.
+
 ## 0.4.2 (2026-04-10)
 
 ### Docs

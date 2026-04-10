@@ -7,7 +7,7 @@ description: >
   by iterating over external sources. Also use when the user mentions "mining", "knowledge
   mining", "auto-research", or asks Claude to "go grow this graph for me".
 metadata:
-  version: "0.2.0"
+  version: "0.3.0"
 ---
 
 # Backpack Mine
@@ -40,6 +40,81 @@ a graph? See `backpack-guide` for the full rule. The short version:
 The validator catches some role violations as warnings, but you are the first line of
 defense. When you extract from a source, filter out anything that isn't a discrete relational
 fact.
+
+## Source safety (READ THIS BEFORE PICKING ANY SOURCE)
+
+The mining loop writes to whichever backpack is currently active. If that
+backpack is shared with a collaborator via OneDrive, Dropbox, Google Drive,
+iCloud, a network mount, or any other sync mechanism, everything you
+extract gets synced to them. **Treat mining as if you were writing to a
+Slack channel that multiple people read.** A single careless source can
+leak personal details into a shared graph.
+
+### Never auto-read local machine files
+
+The following files are **off-limits** to mining unless the user explicitly
+names them by path in the current request:
+
+- **`CLAUDE.md`** — any of them. Project CLAUDE.md, workspace CLAUDE.md,
+  `~/.claude/CLAUDE.md`, memory files under `~/.claude/projects/`. These
+  contain personal preferences and briefing context the user never
+  intended to be indexed into a graph, let alone a shared one.
+- **`~/.config/*`, `~/.ssh/*`, `~/.aws/*`, `~/.gnupg/*`, `~/Library/Keychains/*`**
+  — credentials and personal configuration.
+- **`.env`, `.env.*`, `*.pem`, `*.key`** — secrets anywhere in the project.
+- **Git history, diffs, commits, shell history, IDE state, editor files**
+  — not explicitly opted in.
+- **Arbitrary files in the user's home directory, project directory, or
+  anywhere else you have Read access to.** You can reach almost any file
+  on the user's machine via the Read tool, but for mining you must not
+  use that access unless the user named the file.
+
+**Never scan directories looking for "relevant" content.** Never read a
+file just because its name sounds like it might be on-topic. The user's
+filesystem is not a source; only what the user explicitly points at is a
+source.
+
+### What IS safe to use as a source
+
+Three categories, in order of preference for safety:
+
+1. **Explicit user-provided seeds.** URLs, file paths, or documents the
+   user named in the current request ("mine the notes in ~/docs/spanish-wines.md",
+   "use this PDF as the seed: ~/Downloads/reference.pdf"). Safe because
+   the user opted in.
+2. **Web search via WebSearch / WebFetch.** Public web pages. Safe because
+   the content is already public and the user chose a public topic.
+3. **Never the local machine unless explicitly named** — see the list above.
+
+When in doubt, **ask the user before reading anything local**. One line
+of confirmation beats leaking personal data into a shared graph.
+
+### Shared backpack caution
+
+Before iteration 1, look at the active backpack's path. If it contains any
+of these indicators:
+
+- `OneDrive`, `Dropbox`, `Google Drive`, `iCloud`, `Box`
+- `/Volumes/` (macOS mounted share)
+- `\\` prefix (Windows UNC path to a network share)
+- Any path the user has told you is shared
+
+...treat the destination as **SHARED** and be especially conservative. In
+shared mode:
+
+- Default to **web search only** regardless of the `sourceMode` setting,
+  unless the user's request explicitly names local files as seeds.
+- In your initial plan message, state the mode clearly: `"This backpack is
+  shared — I'll use public web sources only unless you tell me otherwise."`
+- Never read anything local without an explicit go-ahead from the user in
+  this request.
+
+### Even on personal backpacks, respect the user's intent
+
+Source safety rules apply even when the active backpack is personal. The
+user said "mine X into a learning graph," not "read my entire home
+directory." Stay scoped. If the user wants you to mine from their local
+docs, they will tell you where the docs live.
 
 ## Defaults
 
@@ -103,16 +178,30 @@ What to mine this iteration. Use this priority order:
 
 ### 2. Find sources
 
-Based on `sourceMode`:
+**Re-read the "Source safety" section above before picking anything.** The
+rules apply at every iteration, not just iteration 1.
 
-- **seeded:** read the next queued seed source (URL via WebFetch, file via Read).
-- **web:** WebSearch for the target. Pick the top 1–3 results that look authoritative
-  (Wikipedia, primary documentation, well-known domain sites). Fetch with WebFetch.
-- **hybrid (default):** drain queued seeds first, then fall back to web search.
+Based on `sourceMode` (automatically downgraded to `web` if the active
+backpack is shared):
 
-Reject sources you can't actually read (paywalls, JS-only pages, dead links). Move on to
-the next candidate. If two consecutive web searches return nothing usable, stop the run
-and tell the user the topic is too narrow.
+- **seeded:** read the next queued seed source the user explicitly named.
+  URL → WebFetch. File path → Read **only if the user named that exact
+  file in the current request**. Never read files the user did not name.
+- **web:** WebSearch for the target. Pick the top 1–3 results that look
+  authoritative (Wikipedia, primary documentation, well-known domain
+  sites). Fetch with WebFetch.
+- **hybrid (default):** drain user-provided seeds first (if any), then
+  fall back to web search.
+
+**When you would normally reach for Read on a local file but the file
+wasn't explicitly named, stop and ask the user instead.** A single line
+("I'd like to read `~/docs/notes.md` as a source — is that OK?") is
+always better than silently indexing something private.
+
+Reject sources you can't actually read (paywalls, JS-only pages, dead
+links). Move on to the next candidate. If two consecutive web searches
+return nothing usable, stop the run and tell the user the topic is too
+narrow.
 
 ### 3. Extract
 
@@ -206,21 +295,30 @@ a total, not an increment).
 
 ## Anti-patterns
 
-- **One source per iteration when one source has 50 entities.** If a Wikipedia article is
-  rich, mine the whole article in a single iteration. An "iteration" is a unit of decision-
-  making, not a unit of data volume.
-- **Writing nodes without sources.** Every mined node needs a `source` property. Without it,
-  the graph becomes untraceable LLM hallucination.
-- **Ignoring validator warnings.** Type drift compounds — drop bad nodes and rename to the
-  canonical type before committing.
-- **Looping forever on a thin topic.** If web search returns nothing relevant twice in a
-  row, stop and tell the user the topic is too narrow.
-- **Mining procedural / briefing content.** The three-role rule still applies. Skip anything
-  that belongs in a skill or CLAUDE.md.
+- **Reading local files the user didn't name.** The worst failure mode.
+  Never reach for CLAUDE.md, dotfiles, shell history, git state, IDE
+  state, or anything else on the local machine that wasn't explicitly
+  named in the user's request. When tempted, ask.
+- **Forgetting that the active backpack might be shared.** Before
+  iteration 1, look at the active backpack's path. If it's on OneDrive,
+  Dropbox, iCloud, a network mount, or a Volumes share, **downgrade to
+  web-only by default**. Personal data must not leak into shared graphs.
+- **One source per iteration when one source has 50 entities.** If a
+  Wikipedia article is rich, mine the whole article in a single
+  iteration. An "iteration" is a unit of decision-making, not a unit of
+  data volume.
+- **Writing nodes without sources.** Every mined node needs a `source`
+  property. Without it, the graph becomes untraceable LLM hallucination.
+- **Ignoring validator warnings.** Type drift compounds — drop bad nodes
+  and rename to the canonical type before committing.
+- **Looping forever on a thin topic.** If web search returns nothing
+  relevant twice in a row, stop and tell the user the topic is too narrow.
+- **Mining procedural / briefing content.** The three-role rule still
+  applies. Skip anything that belongs in a skill or CLAUDE.md.
 - **Bypassing the dry run.** Always preview before committing.
-- **Adding nodes that would be orphans.** Respect `minConnections` — if a candidate node
-  has no plausible relationship to anything in the proposed batch or in the existing graph,
-  don't add it.
+- **Adding nodes that would be orphans.** Respect `minConnections` — if
+  a candidate node has no plausible relationship to anything in the
+  proposed batch or in the existing graph, don't add it.
 
 ## Example invocation
 
