@@ -18,13 +18,20 @@ Claude will set it up for you. After that, just start talking.
 
 ### Claude Code (terminal)
 
-Run:
+Run these two commands in Claude Code:
 
 ```
-/install-plugin https://github.com/NoahIrzinger/backpack-ontology-plugin
+/plugin marketplace add NoahIrzinger/backpack-ontology-plugin
+/plugin install backpack-ontology-plugin@NoahIrzinger-backpack-ontology-plugin
 ```
 
-Restart Claude Code and you're ready.
+The first command registers this repo as a marketplace source. The second installs the plugin from it. Restart Claude Code (or run `/reload-plugins`) and you're ready.
+
+For local development against a cloned repo, start Claude Code with:
+
+```
+claude --plugin-dir ./backpack-ontology-plugin
+```
 
 ### Connect to the cloud (free)
 

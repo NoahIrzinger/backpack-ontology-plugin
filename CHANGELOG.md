@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.1 (2026-04-10)
+
+### Fix
+- **README install instructions.** The previous README told users to run
+  `/install-plugin <github-url>`, which is not a real Claude Code command —
+  it fell through to "Unknown skill: install-plugin". Corrected to the actual
+  marketplace-based install flow: `/plugin marketplace add` followed by
+  `/plugin install`. Also documented the `--plugin-dir` path for local
+  development against a cloned repo.
+
 ## 0.2.0 (2026-04-10)
 
 Pairs with `backpack-ontology@0.3.0` and `backpack-viewer@0.3.0`. Existing graphs
