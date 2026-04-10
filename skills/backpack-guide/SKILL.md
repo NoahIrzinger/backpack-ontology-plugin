@@ -4,13 +4,16 @@ description: >
   This skill should be used when the user asks to "create a learning graph",
   "store knowledge", "build a learning graph", "search the backpack",
   "remember this", "add to the graph", "visualize the graph",
-  "show me the graph", "set up auto-capture", "enable backpack hooks",
+  "show me the graph", "audit my backpack", "normalize my graph",
+  "check graph health", "snapshot this", "branch this graph",
   "sync my backpack", "sync to cloud", "upload to cloud", "move to cloud",
   or wants persistent structured memory across sessions. Also use when
   the user mentions "backpack", "ontology", "learning graph", "nodes and
-  edges", "graph traversal", or "sync".
+  edges", "graph traversal", or "sync". For autonomous mining of a topic
+  ("mine X", "research X into backpack", "grow this graph from sources"),
+  use the separate `backpack-mine` skill instead.
 metadata:
-  version: "0.4.0"
+  version: "0.5.0"
 ---
 
 # Backpack Guide
@@ -90,7 +93,6 @@ When working with a learning graph, never load the whole thing. Start broad, dri
 - `backpack_node_types` — distinct node types with counts
 - `backpack_list_nodes` — paginated node summaries, optionally filtered by type
 - `backpack_search` — text search across all node properties
-- `backpack_audit` — connectivity audit: orphans, weak nodes, sparse types
 
 ### Layer 3: Inspect
 
@@ -127,8 +129,11 @@ Errors always block the commit regardless of `dryRun`. Don't wrap dry-run in a l
 
 ### Layer 5: Audit and consolidate
 
+- `backpack_health` — **one-call complete picture** — runs all the audits below in a single call and returns a unified report (tokens, connectivity, role violations, type drift plan, active editor). Start here when you want to know how a graph is doing.
 - `backpack_audit_roles` — **scan for content that violates the three-role rule** — flags nodes that look procedural (should be a skill) or briefing-like (should be in CLAUDE.md). Run periodically.
+- `backpack_normalize` — **consolidate type drift** — collapses near-miss type variants ("service" / "Service" / "SERVICE") onto the dominant one, both for nodes and edges. **Defaults to dry-run** for safety: review the plan, then call again with `dryRun: false` to apply. Type renames preserve node IDs and all edges, so this is safe to run on a connected graph.
 - `backpack_audit` — connectivity audit
+- `backpack_lock_status` — read the current edit heartbeat for a graph (who else is actively editing, if anyone)
 
 ## Best Practices
 
@@ -187,8 +192,8 @@ Indices 0, 1, 2 refer to new nodes in order. Use existing node IDs as strings to
 
 ### Improving an existing learning graph
 
-1. `backpack_audit` → connectivity issues (orphans, weak nodes, sparse types)
-2. `backpack_audit_roles` → three-role rule violations
+1. `backpack_health` → unified report (faster than running each tool separately)
+2. `backpack_normalize` with `dryRun: true` → preview type drift consolidation, then apply if the plan looks right
 3. `backpack_connect` → fix orphans by adding edges
 4. Move flagged procedural nodes into a skill, briefing nodes into CLAUDE.md, then `backpack_remove_node` from the graph
 
@@ -207,9 +212,36 @@ Indices 0, 1, 2 refer to new nodes in order. Use existing node IDs as strings to
 4. `backpack_audit` for connectivity gaps
 5. Suggest opening the viewer
 
-## Hooks
+## Collaboration and conflicts
 
-Backpack installs a lightweight PostToolUse hook that confirms when the backpack has been updated. Hooks are installed automatically when the MCP server starts. Disable by removing them from `.claude/settings.json`.
+When a learning graph is shared (e.g. via OneDrive, Dropbox, or a network filesystem), multiple agents may try to write at the same time. Backpack handles this with optimistic concurrency:
+
+- Every read records the current version of the graph.
+- Every write must match that version. If someone else wrote in between, the second writer gets a `ConcurrencyError` and **no partial state is committed**.
+- On conflict, retry: the local cache is invalidated automatically, so the next read pulls fresh state. Re-apply your change against the new state and try again.
+
+Backpack also writes a lightweight heartbeat (`graphs/<name>/.lock`) on every successful write, with the author and timestamp. Treat this as an awareness signal — if you're about to make a big change and the heartbeat shows another author was active in the last few minutes, consider coordinating before clobbering their work.
+
+## Versioning: branches, snapshots, rollback
+
+Every learning graph has full version history. Use it as a safety net before risky operations.
+
+- `backpack_snapshot <graph> "<label>"` — capture a labeled snapshot of the current state. Returns a version number. Cheap.
+- `backpack_versions <graph>` — list all snapshots with labels and versions, newest first.
+- `backpack_rollback <graph> <version>` — revert the graph to a previous snapshot. Destructive but safe (the snapshot is preserved as a version you can roll back to again).
+- `backpack_diff <graph> <version>` — compare current state with a snapshot.
+- `backpack_branch_create <graph> <branch>` / `backpack_branch_switch` / `backpack_branch_list` / `backpack_branch_delete` — fork a graph into a named branch for isolated experimentation. Branches are independent event logs.
+
+**When to snapshot:**
+
+- Before any bulk import or normalization run
+- Before deleting nodes
+- Before running an autonomous mining loop (the `backpack-mine` skill does this automatically)
+- Anytime the user says "save where this is" or "checkpoint this"
+
+## Autonomous mining
+
+For "mine a topic" / "build a learning graph from sources" / "research X into the backpack" requests, hand off to the `backpack-mine` skill. It runs an iteration loop that finds sources, extracts entities and relationships, validates them through `backpack_import_nodes`, and stops on convergence or a node target. Don't try to replicate that loop here — invoke the dedicated skill.
 
 ## Visualization
 

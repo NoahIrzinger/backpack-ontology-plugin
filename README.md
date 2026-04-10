@@ -46,6 +46,19 @@ No commands to learn. Just talk naturally.
 
 > "Add the new vendor agreement to backpack"
 
+### Mine a topic autonomously
+
+> "Mine the gut microbiome into a learning graph"
+
+> "Build a learning graph about Spanish wines, 30 nodes max"
+
+> "Research the history of postgres into the backpack"
+
+Claude will run an iteration loop: find sources, extract entities and relationships,
+validate against the existing graph, and commit. It stops when it hits the iteration cap,
+the node target, or when it stops finding new entities. Every node carries the source it
+came from, so the graph stays traceable.
+
 ### Find something
 
 > "What's in my backpack about Acme Corp?"
@@ -70,12 +83,10 @@ Sign up for a free account at [app.backpackontology.com](https://app.backpackont
 
 | Component | What it does |
 |---|---|
-| **MCP Server** | 16 tools for storing, searching, and traversing learning graphs |
-| **Skill** | Teaches Claude best practices for organizing and querying your backpack |
-| **Update Notifications** | Confirms when your backpack has been updated |
+| **MCP Server** | Tools for storing, searching, traversing, auditing, and normalizing learning graphs. Auto-migrates pre-0.3.0 graphs on first start. |
+| **`backpack-guide` skill** | Teaches Claude best practices for organizing and querying your backpack |
+| **`backpack-mine` skill** | Autonomous mining loop — point Claude at a topic and grow a graph from web sources |
 | **Visualization** | Claude launches a web-based graph explorer when you ask to see your data |
-
-Auto-capture hooks install automatically. To disable, remove the backpack hooks from `.claude/settings.json`.
 
 ## Reference
 
@@ -85,11 +96,11 @@ Auto-capture hooks install automatically. To disable, remove the backpack hooks 
 |---|---|
 | `npx backpack-viewer` | Open the graph visualizer (http://localhost:5173) |
 | `npx -p backpack-ontology@latest backpack-sync` | Upload local learning graphs to Backpack App |
-| `npx -p backpack-ontology@latest backpack-init` | Reinstall auto-capture hooks if removed |
+| `npx -p backpack-ontology@latest backpack-init` | Remove any leftover Backpack hooks from `.claude/settings.json` (the MCP server also runs this cleanup automatically on startup) |
 
 ### Data storage
 
-Local learning graphs are stored as human-readable JSON at `~/.local/share/backpack/ontologies/`.
+Local learning graphs are stored at `~/.local/share/backpack/graphs/<name>/`. Each graph has an append-only event log (`branches/<branch>/events.jsonl`) and a materialized snapshot cache (`branches/<branch>/snapshot.json`). Graphs from older versions are migrated automatically on first start.
 
 ## Privacy & Telemetry
 
