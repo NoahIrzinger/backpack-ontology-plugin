@@ -219,7 +219,7 @@ Skip:
 - Anything that would be a duplicate of an existing node (you already saw the vocabulary
   in step 3 of setup — use it)
 
-For every extracted node, attach source metadata automatically:
+For every extracted node, attach source metadata and a summary:
 
 ```json
 {
@@ -227,6 +227,7 @@ For every extracted node, attach source metadata automatically:
   "type": "Person",
   "properties": {
     "name": "Alice Chen",
+    "summary": "VP of Operations. Manages vendor relationships and property maintenance. Recently flagged ABC Maintenance for SLA violations.",
     
     // Required source metadata (attached automatically)
     "source": "https://example.com/team#alice",
@@ -239,10 +240,16 @@ For every extracted node, attach source metadata automatically:
 
 | Field | Purpose | Example |
 |---|---|---|
+| `summary` | 1-2 sentence summary (for graph viewer context) | `"VP of Operations. Manages vendors and maintenance."` |
 | `source` | Pointer to original data (URL, file path, system:resource) | `https://example.com/team`, `email:outlook/thread-123`, `jira:project/abc/ISSUE-42` |
 | `source_type` | System that owns this data | `web`, `email`, `jira`, `slack`, `document`, `file` |
 | `source_date` | When this data was created/modified in source | ISO 8601: `2026-04-11T10:30:00Z` |
 | `source_reference` | Human-readable context from the source | `"Team page"`, `"Subject: Q2 planning"`, `"ISSUE-42: Pricing strategy"` |
+
+**Summary discipline:**
+- **1-2 sentences max** — just enough to understand the node without reading the source
+- **Specific facts** — not "important person" but "VP of Operations, manages vendors, flagged ABC for SLA violations"
+- **Viewer-friendly** — when you see this node in the graph, the summary appears in the sidebar (you understand it at a glance)
 
 **Why this matters:**
 - **Traceability** — readers can click back to the original
@@ -333,8 +340,11 @@ a total, not an increment).
   Wikipedia article is rich, mine the whole article in a single
   iteration. An "iteration" is a unit of decision-making, not a unit of
   data volume.
-- **Writing nodes without sources.** Every mined node needs a `source`
-  property. Without it, the graph becomes untraceable LLM hallucination.
+- **Writing nodes without sources or summaries.** Every mined node needs both:
+  - `source` — pointer back to original data (for traceability)
+  - `summary` — 1-2 sentence gist (for graph viewer context)
+  
+  Without these, the graph becomes untraceable and unreadable in the viewer.
 - **Ignoring validator warnings.** Type drift compounds — drop bad nodes
   and rename to the canonical type before committing.
 - **Looping forever on a thin topic.** If web search returns nothing
