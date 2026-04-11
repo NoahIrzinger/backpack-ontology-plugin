@@ -219,13 +219,39 @@ Skip:
 - Anything that would be a duplicate of an existing node (you already saw the vocabulary
   in step 3 of setup — use it)
 
-For every extracted node, attach two properties:
+For every extracted node, attach source metadata automatically:
 
-- `source` — the URL or file path the entity came from
-- `minedAt` — ISO timestamp of this iteration
+```json
+{
+  "id": "n_person_alice",
+  "type": "Person",
+  "properties": {
+    "name": "Alice Chen",
+    
+    // Required source metadata (attached automatically)
+    "source": "https://example.com/team#alice",
+    "source_type": "web",
+    "source_date": "2026-04-11T10:30:00Z",
+    "source_reference": "Example.com team page"
+  }
+}
+```
+
+| Field | Purpose | Example |
+|---|---|---|
+| `source` | Pointer to original data (URL, file path, system:resource) | `https://example.com/team`, `email:outlook/thread-123`, `jira:project/abc/ISSUE-42` |
+| `source_type` | System that owns this data | `web`, `email`, `jira`, `slack`, `document`, `file` |
+| `source_date` | When this data was created/modified in source | ISO 8601: `2026-04-11T10:30:00Z` |
+| `source_reference` | Human-readable context from the source | `"Team page"`, `"Subject: Q2 planning"`, `"ISSUE-42: Pricing strategy"` |
+
+**Why this matters:**
+- **Traceability** — readers can click back to the original
+- **Staleness detection** — queries can see how old extracted data is
+- **Future features** — cache invalidation, source change detection
+- **Trust** — you can show exactly where insights come from
 
 For every extracted edge that came from a specific source (rather than being inferred),
-attach the same `source` property.
+attach the same `source` and `source_type` properties.
 
 ### 4. Validate (dry run)
 
