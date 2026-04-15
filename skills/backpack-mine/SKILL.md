@@ -76,15 +76,20 @@ source.
 
 ### What IS safe to use as a source
 
-Three categories, in order of preference for safety:
+Four categories, in order of preference for safety:
 
 1. **Explicit user-provided seeds.** URLs, file paths, or documents the
    user named in the current request ("mine the notes in ~/docs/spanish-wines.md",
    "use this PDF as the seed: ~/Downloads/reference.pdf"). Safe because
    the user opted in.
-2. **Web search via WebSearch / WebFetch.** Public web pages. Safe because
+2. **KB documents.** Documents in mounted KB directories are user-curated
+   local content — safe to use as sources. Use `backpack_kb_list` to
+   discover them and `backpack_kb_ingest` to read their content. Obsidian
+   vaults, shared folders, and team directories that the user has mounted
+   are all valid sources.
+3. **Web search via WebSearch / WebFetch.** Public web pages. Safe because
    the content is already public and the user chose a public topic.
-3. **Never the local machine unless explicitly named** — see the list above.
+4. **Never the local machine unless explicitly named** — see the list above.
 
 When in doubt, **ask the user before reading anything local**. One line
 of confirmation beats leaking personal data into a shared graph.
@@ -187,11 +192,15 @@ backpack is shared):
 - **seeded:** read the next queued seed source the user explicitly named.
   URL → WebFetch. File path → Read **only if the user named that exact
   file in the current request**. Never read files the user did not name.
+- **kb:** use `backpack_kb_list` to discover documents in mounted KB
+  directories relevant to the target. Use `backpack_kb_ingest` to read
+  their content for extraction. KB mounts (Obsidian vaults, shared
+  folders, team directories) are rich sources of curated material.
 - **web:** WebSearch for the target. Pick the top 1–3 results that look
   authoritative (Wikipedia, primary documentation, well-known domain
   sites). Fetch with WebFetch.
-- **hybrid (default):** drain user-provided seeds first (if any), then
-  fall back to web search.
+- **hybrid (default):** drain user-provided seeds first, then KB
+  documents from relevant mounts, then fall back to web search.
 
 **When you would normally reach for Read on a local file but the file
 wasn't explicitly named, stop and ask the user instead.** A single line
@@ -312,11 +321,18 @@ If you stop, jump to End of Run.
    View: http://localhost:5173#<graph>
    ```
 
-4. **Suggest next steps** based on what `backpack_health` returned:
+4. **Synthesize into KB (optional).** If the mining run produced a cohesive graph, offer to
+   create a KB document summarizing the findings:
+   - `backpack_synthesize` the graph (or a subgraph) into structured prose
+   - `backpack_kb_save` the synthesis as a KB document with appropriate tags
+   - This closes the mine → graph → synthesize → document cycle
+
+5. **Suggest next steps** based on what `backpack_health` returned:
    - "I noticed <X> orphan nodes — want me to add edges?"
    - "<Y> nodes have role violations — want me to clean them up?"
    - "Want to run another <K> iterations to deepen specific areas?"
    - "Type drift needs another normalize pass — want me to apply it?"
+   - "Want me to synthesize the graph into a KB document?"
 
 ## Resuming a run
 

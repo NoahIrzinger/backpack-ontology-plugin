@@ -7,11 +7,14 @@ description: >
   "show me the graph", "audit my backpack", "normalize my graph",
   "check graph health", "snapshot this", "branch this graph",
   "sync my backpack", "sync to cloud", "upload to cloud", "move to cloud",
+  "knowledge base", "kb", "save a document", "search documents",
+  "mount a folder",
   or wants persistent structured memory across sessions. Also use when
   the user mentions "backpack", "ontology", "learning graph", "nodes and
-  edges", "graph traversal", or "sync". For autonomous mining of a topic
-  ("mine X", "research X into backpack", "grow this graph from sources"),
-  use the separate `backpack-mine` skill instead.
+  edges", "graph traversal", "sync", or "knowledge base". For autonomous
+  mining of a topic ("mine X", "research X into backpack", "grow this
+  graph from sources"), use the separate `backpack-mine` skill instead.
+  For dedicated KB workflows, see the `backpack-kb` skill.
 metadata:
   version: "0.7.1"
 ---
@@ -265,6 +268,32 @@ Every learning graph has full version history. Use it as a safety net before ris
 
 For "mine a topic" / "build a learning graph from sources" / "research X into the backpack" requests, hand off to the `backpack-mine` skill. It runs an iteration loop that finds sources, extracts entities and relationships, validates them through `backpack_import_nodes`, and stops on convergence or a node target. Don't try to replicate that loop here — invoke the dedicated skill.
 
+## Knowledge Base (KB)
+
+The KB layer adds markdown documents alongside learning graphs. Documents live in **mounts** — filesystem directories that Backpack indexes. Obsidian vaults, shared drives, team folders, and any local directory can be mounted.
+
+### Mount management
+
+- `backpack_kb_mount` — add or remove a mount (provide a filesystem path)
+- `backpack_kb_mounts` — list all registered mounts
+
+### Working with KB documents
+
+- `backpack_kb_list` — list documents across all mounts (filterable by mount, tags, collection)
+- `backpack_kb_read` — read a specific document's content and metadata
+- `backpack_kb_search` — full-text search across all mounted documents
+- `backpack_kb_save` — write a markdown document with metadata (title, tags, collection)
+- `backpack_kb_ingest` — read a document's content for processing (extraction, mining, synthesis)
+
+### The document-to-graph pipeline
+
+KB documents and learning graphs feed each other in a cycle:
+
+1. **Document to graph:** `backpack_kb_ingest` a document → `backpack_extract` entities and relationships → `backpack_import_nodes` into a graph
+2. **Graph to document:** query a graph → `backpack_synthesize` findings into prose → `backpack_kb_save` as a new KB document
+
+This cycle means the KB is both a source of raw material for graphs and a destination for graph-derived insights. For dedicated KB workflows, see the `backpack-kb` skill.
+
 ## Visualization
 
 Backpack includes a web-based graph visualizer with force-directed layout and live reload.
@@ -277,12 +306,24 @@ When the user asks to "visualize", "show the graph", "see the learning graph", o
 
 The viewer reads directly from the same storage and supports live reload — changes via MCP appear automatically.
 
-## Syncing to Backpack App
+## Cloud sync
 
-When the user says anything about syncing — "sync my backpack", "sync to cloud", "upload to cloud", "push to cloud" — IMMEDIATELY run:
+Backpack can sync local graphs and KB documents to the cloud via the viewer's built-in sync controls. The cloud acts as a **cache backpack** — a local cache of cloud data where writes go through a relay.
 
-```bash
-npx -p backpack-ontology@latest backpack-sync
-```
+### Push and pull
 
-Do NOT ask clarifying questions. Do NOT use MCP tools first. Just run the command. The sync tool handles auth, upload, and reporting automatically.
+- **Push** (local to cloud): packages the graph as an encrypted BPAK archive and uploads it. The user triggers this from the viewer's sync panel.
+- **Pull** (cloud to local): downloads a cloud graph into the local cache backpack. Use `backpack_cloud_import` to pull a specific graph.
+
+### Cloud tools
+
+- `backpack_cloud_login` — authenticate with the cloud relay
+- `backpack_cloud_list` — list graphs available in the cloud
+- `backpack_cloud_search` — search cloud graphs by name or content
+- `backpack_cloud_import` — pull a cloud graph into the local cache
+
+### Encrypted vs unencrypted
+
+Sync defaults to encrypted (BPAK with age encryption). Unencrypted sync is available for public or shared graphs where encryption is unnecessary. The viewer's sync panel exposes both options.
+
+When the user says "sync my backpack", "push to cloud", or "pull from cloud", point them to the viewer's sync controls or use the cloud tools above. The old `npx backpack-sync` CLI is retired — sync now goes through the viewer.
