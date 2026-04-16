@@ -6,9 +6,9 @@ description: >
   "ralph wiggum loop", "autonomous mining", or wants to autonomously grow a learning graph
   by iterating over external sources. Also use when the user mentions "mining", "knowledge
   mining", "auto-research", or asks Claude to "go grow this graph for me". Also triggers
-  for full pipeline requests like "mine X, refine the core KBs, and distill the signals",
-  "full pipeline on X", or "mine, refine, and distill X" — in these cases, run the mine
-  skill first, then chain to backpack-refine and backpack-distill.
+  for full pipeline requests like "mine X, extract the core KBs, and refine the signals",
+  "full pipeline on X", or "mine, extract, and refine X" — in these cases, run the mine
+  skill first, then chain to backpack-extract and backpack-refine.
 metadata:
   version: "0.3.0"
 ---
@@ -325,17 +325,17 @@ If you stop, jump to End of Run.
    ```
 
 4. **Continue the pipeline.** If the user requested the full pipeline ("mine, refine, and
-   distill"), proceed directly to `backpack-refine` (generate KB documents) and then
-   `backpack-distill` (run signal detection). If not a pipeline request, suggest the
+   refine"), proceed directly to `backpack-extract` (generate KB documents) and then
+   `backpack-refine` (run signal detection). If not a pipeline request, suggest the
    next step:
-   `Mining complete. Want me to refine the core KBs? (/refine)`
+   `Mining complete. Want me to extract the core KBs? (/extract)`
 
 5. **Suggest next steps** based on what `backpack_health` returned:
    - "I noticed <X> orphan nodes — want me to add edges?"
    - "<Y> nodes have role violations — want me to clean them up?"
    - "Want to run another <K> iterations to deepen specific areas?"
    - "Type drift needs another normalize pass — want me to apply it?"
-   - "Want me to refine the graph into KB documents? (/refine)"
+   - "Want me to extract the graph into KB documents? (/extract)"
 
 ## Resuming a run
 

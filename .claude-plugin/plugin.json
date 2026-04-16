@@ -7,5 +7,5 @@
   },
   "homepage": "https://www.npmjs.com/package/backpack-ontology",
   "license": "Apache-2.0",
-  "keywords": ["knowledge-graph", "ontology", "memory", "mcp", "mining", "distill"]
+  "keywords": ["knowledge-graph", "ontology", "memory", "mcp", "mining", "extract", "refine"]
 }
