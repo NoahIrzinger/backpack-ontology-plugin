@@ -5,7 +5,10 @@ description: >
   from scratch", "research a topic into the backpack", "expand a graph automatically",
   "ralph wiggum loop", "autonomous mining", or wants to autonomously grow a learning graph
   by iterating over external sources. Also use when the user mentions "mining", "knowledge
-  mining", "auto-research", or asks Claude to "go grow this graph for me".
+  mining", "auto-research", or asks Claude to "go grow this graph for me". Also triggers
+  for full pipeline requests like "mine X, refine the core KBs, and distill the signals",
+  "full pipeline on X", or "mine, refine, and distill X" — in these cases, run the mine
+  skill first, then chain to backpack-refine and backpack-distill.
 metadata:
   version: "0.3.0"
 ---
@@ -236,7 +239,7 @@ For every extracted node, attach source metadata and a summary:
   "type": "Person",
   "properties": {
     "name": "Alice Chen",
-    "summary": "VP of Operations. Manages vendor relationships and property maintenance. Recently flagged ABC Maintenance for SLA violations.",
+    "summary": "Lead researcher in gut microbiome studies. Published 12 papers on Bacteroides metabolism. Pioneered the butyrate-immune axis model.",
     
     // Required source metadata (attached automatically)
     "source": "https://example.com/team#alice",
@@ -249,7 +252,7 @@ For every extracted node, attach source metadata and a summary:
 
 | Field | Purpose | Example |
 |---|---|---|
-| `summary` | 1-2 sentence summary (for graph viewer context) | `"VP of Operations. Manages vendors and maintenance."` |
+| `summary` | 1-2 sentence summary (for graph viewer context) | `"Lead microbiome researcher. Pioneered butyrate-immune axis model."` |
 | `source` | Pointer to original data (URL, file path, system:resource) | `https://example.com/team`, `email:outlook/thread-123`, `jira:project/abc/ISSUE-42` |
 | `source_type` | System that owns this data | `web`, `email`, `jira`, `slack`, `document`, `file` |
 | `source_date` | When this data was created/modified in source | ISO 8601: `2026-04-11T10:30:00Z` |
@@ -257,7 +260,7 @@ For every extracted node, attach source metadata and a summary:
 
 **Summary discipline:**
 - **1-2 sentences max** — just enough to understand the node without reading the source
-- **Specific facts** — not "important person" but "VP of Operations, manages vendors, flagged ABC for SLA violations"
+- **Specific facts** — not "important person" but "Lead researcher, 12 papers on Bacteroides, pioneered the butyrate-immune axis model"
 - **Viewer-friendly** — when you see this node in the graph, the summary appears in the sidebar (you understand it at a glance)
 
 **Why this matters:**
@@ -321,18 +324,18 @@ If you stop, jump to End of Run.
    View: http://localhost:5173#<graph>
    ```
 
-4. **Synthesize into KB (optional).** If the mining run produced a cohesive graph, offer to
-   create a KB document summarizing the findings:
-   - `backpack_synthesize` the graph (or a subgraph) into structured prose
-   - `backpack_kb_save` the synthesis as a KB document with appropriate tags
-   - This closes the mine → graph → synthesize → document cycle
+4. **Continue the pipeline.** If the user requested the full pipeline ("mine, refine, and
+   distill"), proceed directly to `backpack-refine` (generate KB documents) and then
+   `backpack-distill` (run signal detection). If not a pipeline request, suggest the
+   next step:
+   `Mining complete. Want me to refine the core KBs? (/refine)`
 
 5. **Suggest next steps** based on what `backpack_health` returned:
    - "I noticed <X> orphan nodes — want me to add edges?"
    - "<Y> nodes have role violations — want me to clean them up?"
    - "Want to run another <K> iterations to deepen specific areas?"
    - "Type drift needs another normalize pass — want me to apply it?"
-   - "Want me to synthesize the graph into a KB document?"
+   - "Want me to refine the graph into KB documents? (/refine)"
 
 ## Resuming a run
 

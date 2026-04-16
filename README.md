@@ -72,6 +72,32 @@ validate against the existing graph, and commit. It stops when it hits the itera
 the node target, or when it stops finding new entities. Every node carries the source it
 came from, so the graph stays traceable.
 
+### Refine a graph into documents
+
+> "Refine the spanish-wines graph"
+
+> "Generate docs from my research graph"
+
+After mining, Claude generates KB documents from the graph: overview, taxonomy, key
+entities, relationship patterns, findings, and source provenance.
+
+### Distill signals
+
+> "Distill my backpack"
+
+> "What signals are in the gut-microbiome graph?"
+
+Runs structural detectors across all graphs to surface what matters: gaps, imbalances,
+disconnected clusters, cross-graph inconsistencies.
+
+### Full pipeline
+
+> "Mine spanish wines, refine the core KBs, and distill the signals"
+
+> "Full pipeline on the gut-microbiome"
+
+Chains all three steps: extract → document → signal.
+
 ### Find something
 
 > "What's in my backpack about Acme Corp?"
@@ -99,6 +125,8 @@ Sign up for a free account at [app.backpackontology.com](https://app.backpackont
 | **MCP Server** | Tools for storing, searching, traversing, auditing, and normalizing learning graphs. Auto-migrates pre-0.3.0 graphs on first start. |
 | **`backpack-guide` skill** | Teaches Claude best practices for organizing and querying your backpack |
 | **`backpack-mine` skill** | Autonomous mining loop — point Claude at a topic and grow a graph from web sources |
+| **`backpack-refine` skill** | Generate KB documents (overview, taxonomy, key entities, findings) from a mined graph |
+| **`backpack-distill` skill** | Run signal detection and enrich findings with contextual descriptions |
 | **Visualization** | Claude launches a web-based graph explorer when you ask to see your data |
 
 ## Reference
